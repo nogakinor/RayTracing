@@ -7,6 +7,7 @@ import light_point
 import Scene
 import ray
 import random
+import time
 from PIL import Image
 
 
@@ -87,6 +88,14 @@ class RayTracer:
         scene.superSamplinglvl = superSamplinglvl
         scene.shadeRays = shadeRays
         print("Finished parsing scene file " + sceneFileName)
+
+    def renderScene(self, outputFileName):
+        start_time = time.time()
+        rgb_data = self.ray_casting_scene(self.camera, self.scene, self.image_width, self.image_height)
+        self.save_image(self.image_width, rgb_data, outputFileName)
+        end_time = time.time()
+        render_time = end_time-start_time
+        print("finished")
 
     def ray_casting_scene(self, camera: Camera, scene: Scene, width, height):
         if scene.super_sampling_lvl == 1 :

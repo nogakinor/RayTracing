@@ -36,10 +36,12 @@ def main(args):
 
     scene_file_name = args.scene_file_name
     output_file_name = args.output_file_name
-
     if len(args) > 3:
         ray_tracer.image_width = args.image_width
         ray_tracer.image_height = args.image_height
+
+    ray_tracer.parseScene(scene_file_name)
+    ray_tracer.renderScene()
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

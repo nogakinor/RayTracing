@@ -2,6 +2,7 @@ import vector
 import material
 import numpy as np
 
+
 class Intersection:
     inter_point = np.array()
     normal = np.array()
@@ -13,4 +14,3 @@ class Intersection:
         self.normal = normal
         self.direction = direction
         self.material = material
-

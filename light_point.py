@@ -1,6 +1,7 @@
 import numpy as np
 import Color
 
+
 class light_point:
     position = np.array()
     color = Color()
@@ -14,5 +15,3 @@ class light_point:
         self.specular = specular
         self.shadow = shadow
         self.radius = radius
-
-

@@ -1,3 +1,4 @@
+
 class Color:
     r = 0
     g = 0
@@ -7,9 +8,6 @@ class Color:
         self.r = r
         self.g = g
         self.b = b
-
-    def round(self, x):
-        return round(x)
 
     def plus(self, other):
         return Color(self.r + other.r, self.g+other.g, self.b+other.b)

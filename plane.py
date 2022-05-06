@@ -4,6 +4,7 @@ import ray
 import vector
 import Intersection
 
+
 class plane(shape):
     normal = np.array()
     offset = 0.0
@@ -18,7 +19,7 @@ class plane(shape):
         if abs(dot_prod < 0.01):
             return
         dprod = vector.dot_product(r.start_point, self.normal)
-        t = (self.offset -dprod) / dot_prod
+        t = (self.offset - dprod) / dot_prod
 
         if t <= 0 or np.isnan(t):
             return

@@ -1,9 +1,9 @@
 # This is a sample Python script.
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+
 import RayTracer
 import argparse
+
 
 # TODO: change accordingly
 def get_args():
@@ -30,7 +30,7 @@ def main(args):
     # Use a breakpoint in the code line below to debug your script.
     ray_tracer = RayTracer()
 
-# TODO - count expected args and throw exception
+    # TODO - count expected args and throw exception
     if len(args) < 2:
         return "not enough arguments"
 
@@ -43,9 +43,9 @@ def main(args):
     ray_tracer.parseScene(scene_file_name)
     ray_tracer.renderScene()
 
-# Press the green button in the gutter to run the script.
+
+# Main Function Run
 if __name__ == '__main__':
     args = get_args()
     main(args)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

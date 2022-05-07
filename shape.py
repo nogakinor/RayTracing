@@ -1,8 +1,10 @@
 import material
 
 
-class shape:
-    material = material()
+class Shape:
+    # material = material()
 
-    def __init__(self, material):
-        self.material = material
+    def __init__(self, inputMaterial: material.Material):
+        self.material = inputMaterial
+
+    # All of the shapes need to implement intersect

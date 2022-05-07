@@ -1,7 +1,7 @@
 # This is a sample Python script.
 
 
-import RayTracer
+import raytracer
 import argparse
 
 

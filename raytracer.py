@@ -1,9 +1,12 @@
 import numpy as np
 import vector
 import camera
-import color
-import lightpoint
-import scene
+from color import Color
+from material import Material
+from sphere import Sphere
+from plane import Plane
+from lightpoint import LightPoint
+from scene import Scene
 import ray
 import random
 import time
@@ -14,81 +17,92 @@ from PIL import Image
 # static class
 class RayTracer:
     # ********** fields init with default values **********
+    # TODO: get these from input
     image_width = 500
     image_height = 500
+
+    # Todo what is this
     camera = 0
     scene = 0
-    ENABLE_SUPER_SAMPLING = False  # true will make it slower
 
     def parseScene(self, sceneFileName):
         f = open(sceneFileName)
-        r = 0
+
         lineNum = 0
         print("Started parsing scene file " + sceneFileName)
-        materialList = np.array()  # of materials
-        shapeList = np.array()  # of shapes
-        lightPointList = np.array()  # of light points
-        # backGround is color
+        materialList = np.array([])  # of materials
+        shapeList = np.array([])  # of shapes
+        lightPointList = np.array([])  # of light points
+        backGround = 0  # Will be Color from input
+
         shadeRays = 0
         recLvl = 0
-        superSamplinglvl = 0
         line = f.readline()
+
         while line is not None:
-            line = line.trim()
+            line = line.strip()
             lineNum += 1
-            if line.isEmpty() or (line.charAt(0) == '#'):  # This line in the scene file is a comment
+            if not line or (line[0] == '#'):  # This line in the scene file is a comment
                 continue
             else:
-                code = line.substring(0, 3).toLowerCase()
+                code = line[0:3].lower()
                 # Split according to white space characters:
-                params = line.substring(3).trim().toLowerCase().split("\\s+")
+                params = line[3:].strip().lower().split()
                 if code == "cam":
                     position = np.array(float(params[0]), float(params[1]), float(params[2]))
                     lookAt = np.array(float(params[3]), float(params[4]), float(params[5]))
                     up = np.array(float(params[6]), float(params[7]), float(params[8]))
-                    self.camera = Camera(position, lookAt, up, float(params[9]), float(params[10]))
+                    self.camera = camera.Camera(position, lookAt, up, float(params[9]), float(params[10]))
                     print("Parsed camera parameters (line {l})".format(l=lineNum))
                 elif code == "set":
-                    backGround = color(float(params[0]), float(params[1]), float(params[2]))
+                    backGround = Color(float(params[0]), float(params[1]), float(params[2]))
                     shadeRays = int(params[3])
                     recLvl = int(params[4])
-                    try:
-                        superSamplinglvl = int(params[5])
-                    except:
-                        superSamplinglvl = 2
                     print("Parsed general settings (line {l})".format(l=lineNum))
                 elif code == "mtl":
                     diffuse = Color(float(params[0]), float(params[1]), float(params[2]))
                     specular = Color(float(params[3]), float(params[4]), float(params[5]))
                     reflection = Color(float(params[6]), float(params[7]), float(params[8]))
-                    material = material(diffuse, specular, reflection, float(params[9]), float(params[10]))
-                    materialList.add(material)
+                    material = Material(diffuse, specular, reflection, float(params[9]), float(params[10]))
+                    # TODO add iterator to materials
+                    # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
+                    np.append(materialList, material)
                     print("Parsed material (line {l})".format(l=lineNum))
                 elif code == "sph":
-                    center = vector(float(params[0]), float(params[1]), float(params[2]))
-                    sphere = sphere(center, float(params[3]), materialList.get(int(params[4]) - 1))
-                    shapeList.add(sphere)
+                    center = np.array([float(params[0]), float(params[1]), float(params[2])])
+                    sphere = Sphere(center, float(params[3]), materialList.get(int(params[4]) - 1))
+                    # TODO add iterator to Spheres
+                    # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
+                    np.append(shapeList, sphere)
                     print("Parsed sphere (line {l})".format(l=lineNum))
                 elif code == "pln":
-                    vector = np.array(float(params[0]), float(params[1]), float(params[2]))
-                    plane = plane(vector, float(params[3]), materialList.get(int(params[4]) - 1))
-                    shapeList.add(plane)
+                    currVector = np.array(float(params[0]), float(params[1]), float(params[2]))
+                    plane = Plane(currVector, float(params[3]), materialList.get(int(params[4]) - 1))
+                    # TODO add iterator to Planes
+                    # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
+                    np.append(shapeList, plane)
                     print("Parsed plane (line {l})".format(l=lineNum))
+                elif code == "box":
+                    # TODO box
+                    np.append(shapeList, box)
+                    print("Parsed Box (line {l})".format(l=lineNum))
                 elif code == "lgt":
                     vctr = np.array(float(params[0]), float(params[1]), float(params[2]))
                     color = Color(float(params[3]), float(params[4]), float(params[5]))
-                    light = light_point(vctr, color, float(params[6]), float(params[7]), float(params[8]))
-                    lightPointList.add(light)
+                    light = LightPoint(vctr, color, float(params[6]), float(params[7]), float(params[8]))
+                    # TODO add iterator to Light
+                    # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
+                    np.append(lightPointList, light)
                     print("Parsed light (line {l})".format(l=lineNum))
                 else:
                     print("ERROR: Did not recognize object: {c} (line {l})".format(c=code, l=lineNum))
-        scene = Scene(shapeList, materialList, lightPointList)
-        scene.backGround = backGround
-        scene.recLvl = recLvl
-        scene.superSamplinglvl = superSamplinglvl
-        scene.shadeRays = shadeRays
+        currScene = Scene(shapeList, materialList, lightPointList)
+        currScene.backGround = backGround
+        currScene.recLvl = recLvl
+        currScene.shadeRays = shadeRays
         print("Finished parsing scene file " + sceneFileName)
 
+    # TODO
     def renderScene(self, outputFileName):
         start_time = time.time()
         rgb_data = self.ray_casting_scene(self.camera, self.scene, self.image_width, self.image_height)
@@ -97,6 +111,7 @@ class RayTracer:
         render_time = end_time - start_time
         print("finished")
 
+    # TODO
     def ray_casting_scene(self, camera: Camera, scene: Scene, width, height):
         if scene.super_sampling_lvl == 1:
             self.ENABLE_SUPER_SAMPLING = False
@@ -145,7 +160,6 @@ class RayTracer:
 
     def bytes_to_rgb(self, width: int, rgb_data: list):
         height = len(rgb_data) / width / 3
-
         return None
 
     def save_image(self, width: int, rgb_data: list, file_name):

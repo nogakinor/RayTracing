@@ -1,51 +1,43 @@
-# This is a sample Python script.
-
-
 import raytracer
-import argparse
+import sys
 
 
-# TODO: change accordingly
-def get_args():
-    """A Helper function that defines the program arguments."""
-    parser = argparse.ArgumentParser(description='Image resizing application, supporting multiple different resizing '
-                                                 'methods including [Nearest neighbor interpolation, '
-                                                 'Seam Carving, Seam Carving with Feed Forward Implementation.')
-    parser.add_argument('--image_path', type=str, help='The input image path')
-    parser.add_argument('--output_dir', type=str, help='The output directory')
-    parser.add_argument('--height', type=int, help='The output image height size')
-    parser.add_argument('--width', type=int, help='The output image width size')
-    parser.add_argument('--resize_method', type=str, help='The resizing method. Supported methods are '
-                                                          '[nearest_neighbor, seam_carving].')
-    parser.add_argument('--use_forward_implementation', action='store_true',
-                        help='If set and seam_carving is used as a resizing method, then the forward-looking '
-                             'implementation is used.')
-    # default out prefix is img
-    parser.add_argument('--output_prefix', type=str, help='Output filename prefix.', default='img')
-    args = parser.parse_args()
-    return args
-
-
-def main(args):
-    # Use a breakpoint in the code line below to debug your script.
-    ray_tracer = RayTracer()
+# The code should run in the command line (you need to send a directory with
+# all the python code files) and accept 4 parameters. For example:
+# python RayTracer.py scenes\Spheres.txt scenes\Spheres.png 500 500
+# those final two are optional, default value is 500x500
+def main():
+    ray_tracer = raytracer.RayTracer()
+    scene_file_name = ""
 
     # TODO - count expected args and throw exception
-    if len(args) < 2:
-        return "not enough arguments"
+    if len(sys.argv) < 2:
+        print("not enough arguments")
+        return
+    if len(sys.argv) == 2:
+        # Default width and height are 500x500
+        width = 500
+        height = 500
+        scene_file_name = sys.argv[0]
+        output_file_name = sys.argv[1]
+    if len(sys.argv) == 3:
+        print("input 2 arguments or 4")
+        return
+    if len(sys.argv) == 4:
+        # We got optional arguments
+        width = sys.argv[3]
+        height = sys.argv[3]
+        scene_file_name = sys.argv[0]
+        output_file_name = sys.argv[1]
+    if len(sys.argv) > 4:
+        print("too many arguments")
+        return
 
-    scene_file_name = args.scene_file_name
-    output_file_name = args.output_file_name
-    if len(args) > 3:
-        ray_tracer.image_width = args.image_width
-        ray_tracer.image_height = args.image_height
-
+    # TODO send the arguments to the ray Tracer
     ray_tracer.parseScene(scene_file_name)
     ray_tracer.renderScene()
 
 
 # Main Function Run
 if __name__ == '__main__':
-    args = get_args()
-    main(args)
-
+    main()

@@ -9,6 +9,7 @@ import sys
 def main():
     ray_tracer = raytracer.RayTracer()
     scene_file_name = ""
+    output_file_name = ""
 
     # TODO - count expected args and throw exception
     if len(sys.argv) < 2:
@@ -26,7 +27,7 @@ def main():
     if len(sys.argv) == 4:
         # We got optional arguments
         width = sys.argv[3]
-        height = sys.argv[3]
+        height = sys.argv[4]
         scene_file_name = sys.argv[0]
         output_file_name = sys.argv[1]
     if len(sys.argv) > 4:
@@ -35,7 +36,7 @@ def main():
 
     # TODO send the arguments to the ray Tracer
     ray_tracer.parseScene(scene_file_name)
-    ray_tracer.renderScene()
+    ray_tracer.renderScene(output_file_name)
 
 
 # Main Function Run

@@ -7,6 +7,7 @@ from sphere import Sphere
 from plane import Plane
 from lightpoint import LightPoint
 from scene import Scene
+from cube import Cube
 import ray
 import random
 import time
@@ -69,21 +70,24 @@ class RayTracer:
                     np.append(materialList, material)
                     print("Parsed material (line {l})".format(l=lineNum))
                 elif code == "sph":
-                    center = np.array([float(params[0]), float(params[1]), float(params[2])])
-                    sphere = Sphere(center, float(params[3]), materialList.get(int(params[4]) - 1))
+                    sphere = Sphere(center, float(params[3]), materialList.item(int(params[4]) - 1))
                     # TODO add iterator to Spheres
                     # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
                     np.append(shapeList, sphere)
                     print("Parsed sphere (line {l})".format(l=lineNum))
                 elif code == "pln":
                     currVector = np.array(float(params[0]), float(params[1]), float(params[2]))
-                    plane = Plane(currVector, float(params[3]), materialList.get(int(params[4]) - 1))
+                    plane = Plane(currVector, float(params[3]), materialList.item(int(params[4]) - 1))
                     # TODO add iterator to Planes
                     # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
                     np.append(shapeList, plane)
                     print("Parsed plane (line {l})".format(l=lineNum))
                 elif code == "box":
                     # TODO box
+                    center = np.array([float(params[0]), float(params[1]), float(params[2])])
+                    scale = float(params[3])
+                    material_index = int(params[4])
+                    box = Cube(center, np.array(scale,scale,scale), materialList.item(material_index-1))
                     np.append(shapeList, box)
                     print("Parsed Box (line {l})".format(l=lineNum))
                 elif code == "lgt":
@@ -112,18 +116,18 @@ class RayTracer:
         print("finished")
 
     # TODO
-    def ray_casting_scene(self, camera: Camera, scene: Scene, width, height):
+    def ray_casting_scene(self, c: camera, scene: Scene, width, height):
         if scene.super_sampling_lvl == 1:
             self.ENABLE_SUPER_SAMPLING = False
-        screen_height = camera.screen_w / width * height
+        screen_height = c.screen_w / width * height
         super_sampling_fac = 1.0 / scene.super_sampling_lvl
         rgb_data_size = self.image_width * self.image_height * 3
-        pixel_to_the_right = vector.multiply(camera.right, camera.screen_w / width)
-        pixel_to_down = vector.multiply(camera.up, -screen_height / height)
-        vec1 = vector.multiply(camera.look_at, camera.screen_d)
-        vec2 = vector.multiply(camera.right, -camera.screenW / 2)
-        vec3 = vector.multiply(camera.up, screen_height / 2)
-        curScreenPoint = vector.add(vector.add(camera.position, vec1), vector.add(vec2, vec3))
+        pixel_to_the_right = vector.multiply(c.right, c.screen_w / width)
+        pixel_to_down = vector.multiply(c.up, -screen_height / height)
+        vec1 = vector.multiply(c.look_at, c.screen_d)
+        vec2 = vector.multiply(c.right, -c.screenW / 2)
+        vec3 = vector.multiply(c.up, screen_height / 2)
+        curScreenPoint = vector.add(vector.add(c.position, vec1), vector.add(vec2, vec3))
         curScreenPoint = vector.add(curScreenPoint, vector.multiply(pixel_to_the_right, 0.5))
         curScreenPoint = vector.add(curScreenPoint, vector.multiply([pixel_to_down], 0.5))
 
@@ -138,14 +142,14 @@ class RayTracer:
                             vec4 = vector.multiply(pixel_to_down, (j + rand_u) * super_sampling_fac)
                             vec5 = vector.multiply(pixel_to_the_right, (j + rand_r) * super_sampling_fac)
                             vec6 = vector.add(curScreenPoint, vector.add(vec4, vec5))
-                            rayDirection = vector.normalize(vector.minus(vec6, camera.position))
-                            intersection = scene.ray_cast(ray(camera.position, rayDirection))
+                            rayDirection = vector.normalize(vector.minus(vec6, c.position))
+                            intersection = scene.ray_cast(ray(c.position, rayDirection))
                             color = scene.compute_color(intersection, 0, 1)
                             curScreenPointColor = curScreenPointColor.add(
                                 color.mulS(super_sampling_fac * super_sampling_fac))
                 else:
-                    rayDirection = vector.normalized(vector.minus(curScreenPoint, camera.position))
-                    intersection = scene.ray_cast(ray(camera.position, rayDirection))
+                    rayDirection = vector.normalized(vector.minus(curScreenPoint, c.position))
+                    intersection = scene.ray_cast(ray(c.position, rayDirection))
                     curScreenPointColor = scene.compute_color(intersection, 0, 1)
 
                 pixel_id = (y * self.image_height + x) * 3

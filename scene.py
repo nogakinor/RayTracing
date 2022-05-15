@@ -19,7 +19,7 @@ class Scene:
     super_sampling_lvl = 0
 
     # lists of stuff at the scene.
-    def __init__(self, shape_list, material_list, light_point_list):
+    def __init__(self, shape_list: list, material_list: list, light_point_list: list):
         self.shape_list = shape_list
         self.material_list = material_list
         self.light_point_list = light_point_list
@@ -79,8 +79,8 @@ class Scene:
                         currRay = ray.Ray(vector.add(start, vector.multiply(revShadeDir, 0.01)), revShadeDir)
                         shadowHit = s.intersect(currRay, True)
                         if shadowHit is not None and vector.vector_len(
-                                vector.minus(shadowHit.getInterPoint(), start)) < rayLength:
-                            lightLeftInRay *= s.Material.trans
+                                vector.minus(shadowHit.inter_point, start)) < rayLength:
+                            lightLeftInRay *= s.material.trans
                             if lightLeftInRay < 0:
                                 lightLeftInRay = 0
                                 break

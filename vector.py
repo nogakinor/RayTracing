@@ -5,14 +5,14 @@ import math
 
 # Declare a vector using np.zeros(3)
 
-def vector_len(v):
+def vector_len(v: np.ndarray):
     ret_val = 0
-    for coordinate in v:
-        ret_val += (coordinate ** 2)
+    for i in range(3):
+        ret_val += (v.item(i) ** 2)
     return math.sqrt(ret_val)
 
 
-def normalized(v):
+def normalized(v: np.ndarray):
     norma = LNG.norm(v)
     ret_val = divide(v, norma)
     return ret_val
@@ -26,7 +26,7 @@ def multiply(v, scalar):
     return np.multiply(v, scalar)
 
 
-def minus(v, other):
+def minus(v: np.ndarray, other: np.ndarray):
     return np.subtract(v, other)
 
 
@@ -35,6 +35,8 @@ def add(v, other):
 
 
 def dot_product(v, other):
+    other = other.reshape(3)
+    v = v.reshape(3)
     return np.dot(v, other)
 
 

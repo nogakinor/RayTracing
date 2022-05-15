@@ -5,9 +5,9 @@ class Color:
 
     # we need to check incorrect rgb values (not in 0-1?)
     def __init__(self, r: float, g: float, b: float):
-        self.r = r
-        self.g = g
-        self.b = b
+        self.r = round(r)
+        self.g = round(g)
+        self.b = round(b)
 
     def plus(self, other):
         return Color(self.r + other.r, self.g + other.g, self.b + other.b)
@@ -19,13 +19,16 @@ class Color:
         return Color(self.r * scalar, self.g * scalar, self.b * scalar)
 
     def get_red(self):
-        return int(255 * self.r)
+        kk = int(255 * self.r)
+        r = bytes(kk)
+        return r
 
     def get_green(self):
-        return int(255 * self.g)
+        return bytes(int(255 * self.g))
 
     def get_blue(self):
-        return int(255 * self.b)
+        kk = int(255 * self.b)
+        return bytes(kk)
 
     def gray_scale(self):
         outSum = self.r + self.g + self.b

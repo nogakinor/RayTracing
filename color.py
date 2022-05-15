@@ -19,16 +19,13 @@ class Color:
         return Color(self.r * scalar, self.g * scalar, self.b * scalar)
 
     def get_red(self):
-        kk = int(255 * self.r)
-        r = bytes(kk)
-        return r
+        return int(255 * self.r)
 
     def get_green(self):
-        return bytes(int(255 * self.g))
+        return int(255 * self.g)
 
     def get_blue(self):
-        kk = int(255 * self.b)
-        return bytes(kk)
+        return int(255 * self.b)
 
     def gray_scale(self):
         outSum = self.r + self.g + self.b

@@ -169,18 +169,22 @@ class RayTracer:
                 curScreenPoint = vector.add(curScreenPoint, pixel_to_the_right)
             curScreenPoint = vector.minus(curScreenPoint, vector.multiply(pixel_to_the_right, width))
             curScreenPoint = vector.add(curScreenPoint, pixel_to_down)
-        return rgb_data
+        rgb_nparray = np.asarray(rgb_data)
+        rgb_nparray = rgb_nparray.reshape(self.image_width, self.image_height, 3)
+        return rgb_nparray
 
     def bytes_to_rgb(self, width: int, rgb_data: list):
         height = len(rgb_data) / width / 3
         return None
 
-    def save_image(self, width: int, rgb_data: list, file_name):
+    def save_image(self, width: int, image: list, file_name):
 
-            height = int(len(rgb_data) / width / 3)
+            #height = int(len(rgb_data) / width / 3)
+            image = np.clip(image, 0,1)
+            result = Image.fromarray(np.uint8(image * 255), mode='RGB')
+            result = result.transpose(Image.FLIP_TOP_BOTTOM)
+            result.show()
 
-            image = Image.frombytes("RGB", (width, height), bytes(rgb_data))
-            image.show()
-            image.save(file_name)
+            result.save(file_name)
         # except:
         #     print("error occured when tried to save image in {f}".format(f = file_name))

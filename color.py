@@ -1,13 +1,14 @@
 class Color:
-    r = 0
-    g = 0
-    b = 0
-
     # we need to check incorrect rgb values (not in 0-1?)
     def __init__(self, r: float, g: float, b: float):
-        self.r = r
-        self.g = g
-        self.b = b
+        self.r = self.round_number(r)
+        self.g = self.round_number(g)
+        self.b = self.round_number(b)
+
+    def round_number (self, col) :
+        if col < 0: col = 0
+        elif col >1: col = 1
+        return col
 
     def plus(self, other):
         return Color(self.r + other.r, self.g + other.g, self.b + other.b)

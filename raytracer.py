@@ -14,7 +14,6 @@ import time
 from PIL import Image
 
 
-# TODO Remove SUPER SAMPLING ENTIRELY
 # static class
 class RayTracer:
     # ********** fields init with default values **********
@@ -27,7 +26,6 @@ class RayTracer:
     def __init__(self):
         self.camera = None
         self.scene = None
-        self.ENABLE_SUPER_SAMPLING = False
 
     def parseScene(self, sceneFileName):
         f = open(sceneFileName)
@@ -61,10 +59,6 @@ class RayTracer:
                     backGround = Color(float(params[0]), float(params[1]), float(params[2]))
                     shadeRays = int(params[3])
                     recLvl = int(params[4])
-                    try :
-                        superSamplinglvl = int(params[5])
-                    except:
-                        superSamplinglvl = 2;
                     print("Parsed general settings (line {l})".format(l=lineNum))
                 elif code == "mtl":
                     diffuse = Color(float(params[0]), float(params[1]), float(params[2]))
@@ -90,7 +84,6 @@ class RayTracer:
                     shapeList.append( plane)
                     print("Parsed plane (line {l})".format(l=lineNum))
                 elif code == "box":
-                    # TODO box
                     center = np.array([float(params[0]), float(params[1]), float(params[2])])
                     scale = float(params[3])
                     material_index = int(params[4])
@@ -107,11 +100,7 @@ class RayTracer:
                     print("Parsed light (line {l})".format(l=lineNum))
                 else:
                     print("ERROR: Did not recognize object: {c} (line {l})".format(c=code, l=lineNum))
-        currScene = Scene(shapeList, materialList, lightPointList)
-        currScene.background = backGround
-        currScene.rec_lvl = recLvl
-        currScene.super_sampling_lvl = superSamplinglvl
-        currScene.shade_ray = shadeRays
+        currScene = Scene(shapeList, materialList, lightPointList, backGround, recLvl, shadeRays)
         self.scene = currScene
         print("Finished parsing scene file " + sceneFileName)
 
@@ -126,10 +115,7 @@ class RayTracer:
 
     # TODO
     def ray_casting_scene(self, c: Camera, scene: Scene, width, height):
-        if scene.super_sampling_lvl == 1:
-            self.ENABLE_SUPER_SAMPLING = False
         screen_height = c.screen_w / width * height
-        super_sampling_fac = 1.0 / scene.super_sampling_lvl
         rgb_data_size = self.image_width * self.image_height * 3
         pixel_to_the_right = vector.multiply(c.right, c.screen_w / width)
         pixel_to_down = vector.multiply(c.up, -screen_height / height)
@@ -143,25 +129,9 @@ class RayTracer:
 
         for y in range(height):
             for x in range(width):
-                curScreenPointColor = Color(0, 0, 0)
-                if (self.ENABLE_SUPER_SAMPLING):
-                    for i in range(scene.super_sampling_lvl):
-                        for j in range(scene.super_sampling_lvl):
-                            rand_r = random.random()
-                            rand_u = random.random()
-                            vec4 = vector.multiply(pixel_to_down, (j + rand_u) * super_sampling_fac)
-                            vec5 = vector.multiply(pixel_to_the_right, (j + rand_r) * super_sampling_fac)
-                            vec6 = vector.add(curScreenPoint, vector.add(vec4, vec5))
-                            rayDirection = vector.normalize(vector.minus(vec6, c.position))
-                            intersection = scene.ray_cast(Ray(c.position, rayDirection))
-                            color = scene.compute_color(intersection, 0, 1)
-                            curScreenPointColor = curScreenPointColor.add(
-                                color.mulS(super_sampling_fac * super_sampling_fac))
-                else:
-                    rayDirection = vector.normalized(vector.minus(curScreenPoint, c.position))
-                    intersection = scene.ray_cast(Ray(c.position, rayDirection))
-                    curScreenPointColor = scene.compute_color(intersection, 0, 1)
-
+                rayDirection = vector.normalized(vector.minus(curScreenPoint, c.position))
+                intersection = scene.ray_cast(Ray(c.position, rayDirection))
+                curScreenPointColor = scene.compute_color(intersection, 0, 1)
                 pixel_id = (y * self.image_height + x) * 3
                 rgb_data[pixel_id] = curScreenPointColor.get_red()
                 rgb_data[pixel_id + 1] = curScreenPointColor.get_green()
@@ -173,18 +143,11 @@ class RayTracer:
         rgb_nparray = rgb_nparray.reshape(self.image_width, self.image_height, 3)
         return rgb_nparray
 
-    def bytes_to_rgb(self, width: int, rgb_data: list):
-        height = len(rgb_data) / width / 3
-        return None
-
     def save_image(self, width: int, image: list, file_name):
-
-            #height = int(len(rgb_data) / width / 3)
+        try:
             image = np.clip(image, 0,1)
             result = Image.fromarray(np.uint8(image * 255), mode='RGB')
-            result = result.transpose(Image.FLIP_TOP_BOTTOM)
             result.show()
-
             result.save(file_name)
-        # except:
-        #     print("error occured when tried to save image in {f}".format(f = file_name))
+        except:
+            print("error occured when tried to save image in {f}".format(f = file_name))

@@ -14,7 +14,7 @@ class Cube:
         self.half_scale = vector.multiply(half_scale, 0.5)
         self.material = material
 
-    def intersect(self, inputRay: ray.Ray):
+    def intersect(self, inputRay: ray.Ray, shadow:bool):
         t_near = -float("inf")
         t_far = float("inf")
         co = vector.minus(self.center,inputRay.start_point)
@@ -52,11 +52,12 @@ class Cube:
         normal = None
 
         for i in range(3):
+            b = axis[i,:3]
             if abs(pc.item(i) - self.half_scale.item(i))  <= sys.float_info.epsilon :
-                normal = axis.item(i)
+                normal = b
                 break
-            if abs(vector.dot_product(pc, 0) + self.half_scale.item(i)) <= sys.float_info.epsilon:
-                normal = vector.multiply(axis.item(i), -1.0)
+            if abs(vector.dot_product(pc, b) + self.half_scale.item(i)) <= sys.float_info.epsilon:
+                normal = vector.multiply(b, -1.0)
                 break
         return intersection.Intersection(intersection_point, normal, inputRay.direction, self.material)
 

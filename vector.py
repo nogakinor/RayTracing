@@ -35,6 +35,9 @@ def add(v, other):
 
 
 def dot_product(v, other):
+    if isinstance(other, np.ndarray) == False:
+        other = np.array(other)
+
     other = other.reshape(3)
     v = v.reshape(3)
     return np.dot(v, other)
@@ -56,7 +59,7 @@ def projected_left(v, other):
     return minus(v, projected(v, other))
 
 
-def reflect(v, other):
+def reflect(v, other: np.ndarray):
     v1 = normalized(other)
     return minus(v, multiply(v, 2 * dot_product(v, v1)))
 

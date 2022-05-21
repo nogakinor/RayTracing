@@ -13,16 +13,15 @@ class Scene:
 
     # static variables:
     MIN_CON = 1.0 / 256
-    background = color.Color(0, 0, 0)
-    shade_ray = 0
-    rec_lvl = 0
-    super_sampling_lvl = 0
 
     # lists of stuff at the scene.
-    def __init__(self, shape_list: list, material_list: list, light_point_list: list):
+    def __init__(self, shape_list: list, material_list: list, light_point_list: list, background: color.Color, reclvl, shade_rays ):
         self.shape_list = shape_list
         self.material_list = material_list
         self.light_point_list = light_point_list
+        self.background = background
+        self.rec_lvl = reclvl
+        self.shade_ray = shade_rays
 
     def ray_cast(self, r: ray.Ray):
         minDistanceSq = float('inf')

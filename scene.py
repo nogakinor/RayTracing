@@ -26,6 +26,7 @@ class Scene:
     def ray_cast(self, r: ray.Ray):
         minDistanceSq = float('inf')
         closest_intersection = None
+        # check every shape for intersection, find the minimal one
         for i in range(len(self.shape_list)):
             inter = self.shape_list[i].intersect(r, False)
             if inter is not None:
@@ -95,8 +96,9 @@ class Scene:
                                                mat.phong)))
                 currColor = currColor.plus(diffuseColor.plus(specularColor).mul_scalar((1 - mat.trans) * illumination))
 
+        # now reflection color
         refDirHit = vector.reflect(input_intersection.direction, input_intersection.normal)
-        ray2 = ray.Ray(vector.add(input_intersection.inter_point, (vector.multiply(refDirHit, 0.001))), refDirHit)
+        ray2 = ray.Ray(vector.add(input_intersection.inter_point, vector.multiply(refDirHit, 0.001)), refDirHit)
         rayReflection = self.ray_cast(ray2)
         reflectionColor = mat.reflection.mul_color(
             self.compute_color(rayReflection, rec_count + 1, contribution * mat.reflection.gray_scale()))

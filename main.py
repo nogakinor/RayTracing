@@ -12,14 +12,14 @@ def main():
     scene_file_name = ""
     output_file_name = ""
 
-    # TODO - count expected args and throw exception
+    # count expected args and throw exception
     if len(sys.argv) < 3:
         print("not enough arguments")
         return
     if len(sys.argv) == 3:
         # Default width and height are 500x500
-        width = 500
-        height = 500
+        # width = 500
+        # height = 500
         scene_file_name = sys.argv[1]
         output_file_name = sys.argv[2]
     if len(sys.argv) == 4:

@@ -17,9 +17,9 @@ class Plane(shape.Shape):
         self.normal = vector.normalized(normal)
         self.offset = offset
 
-    def intersect(self, inputRay: ray.Ray, shadow:bool):
+    def intersect(self, inputRay: ray.Ray, shadow: bool):
         dot_prod = vector.dot_product(inputRay.direction, self.normal)
-        if abs(dot_prod < 0.01):
+        if abs(dot_prod) < 0.01:
             return
         dprod = vector.dot_product(inputRay.start_point, self.normal)
         t = (self.offset - dprod) / dot_prod

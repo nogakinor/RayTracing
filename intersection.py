@@ -12,7 +12,7 @@ class Intersection:
 
     def __init__(self, inter_point: np.ndarray, normal: np.ndarray, direction: np.ndarray,
                  inputMaterial: material.Material):
-        self.inter_point = inter_point
+        self.intersection_point = inter_point
         self.normal = normal
         self.direction = direction
         self.material = inputMaterial

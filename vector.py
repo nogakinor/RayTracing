@@ -1,17 +1,9 @@
 from numpy import linalg as LNG
 import numpy as np
-import math
 
-
-# Declare a vector using np.zeros(3)
 
 def vector_len(v: np.ndarray):
-    # for consistent, why not just use LNG.norm?
     return LNG.norm(v)
-    # ret_val = 0
-    # for i in range(3):
-    #     ret_val += (v.item(i) ** 2)
-    # return math.sqrt(ret_val)
 
 
 def normalized(v: np.ndarray):

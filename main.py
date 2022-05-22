@@ -7,7 +7,6 @@ import sys
 # python RayTracer.py scenes\Spheres.txt scenes\Spheres.png 500 500
 # those final two are optional, default value is 500x500
 def main():
-    args = sys.argv
     ray_tracer = raytracer.RayTracer()
     scene_file_name = ""
     output_file_name = ""
@@ -37,7 +36,6 @@ def main():
         print("too many arguments")
         return
 
-    # TODO send the arguments to the ray Tracer
     ray_tracer.parseScene(scene_file_name)
     ray_tracer.renderScene(output_file_name)
 

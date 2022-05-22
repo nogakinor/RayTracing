@@ -25,18 +25,18 @@ class Sphere(shape.Shape):
         tca = vector.dot_product(currVector, inputRay.direction)
         if tca < 0:
             return
-        l_dot_p = vector.dot_product(currVector, currVector)
-        d_square = l_dot_p - (tca * tca)
-        if d_square > self.radius_sq:
+        norm_vector = vector.dot_product(currVector, currVector)
+        dist_squared = norm_vector - (tca * tca)
+        if dist_squared > self.radius_sq:
             return
-        if l_dot_p < self.radius_sq:
+        if norm_vector < self.radius_sq:
             if shadow:
                 return intersection.Intersection(inputRay.start_point, vector.negative(vector.normalized(currVector)),
                                                  inputRay.direction, self.material)
             else:
                 return
 
-        thc = math.sqrt(self.radius_sq - d_square)
+        thc = math.sqrt(self.radius_sq - dist_squared)
         inter_point = vector.add(inputRay.start_point, vector.multiply(inputRay.direction, tca - thc))
         inter_normal = vector.normalized(vector.minus(inter_point, self.center))
         return intersection.Intersection(inter_point, inter_normal, inputRay.direction, self.material)

@@ -1,9 +1,11 @@
-def round_number(col):
-    if col < 0:
-        col = 0
-    elif col > 1:
-        col = 1
-    return col
+
+# just use np.clip?
+def round_number(rgb_num):
+    if rgb_num < 0:
+        rgb_num = 0
+    elif rgb_num > 1:
+        rgb_num = 1
+    return rgb_num
 
 
 class Color:
@@ -13,25 +15,15 @@ class Color:
         self.g = round_number(g)
         self.b = round_number(b)
 
-    def plus(self, other):
+    def add_color(self, other):
         return Color(self.r + other.r, self.g + other.g, self.b + other.b)
 
-    def mul_color(self, other):
+    def mult_color(self, other):
         return Color(self.r * other.r, self.g * other.g, self.b * other.b)
 
-    def mul_scalar(self, scalar):
+    def mult_scalar_color(self, scalar):
         return Color(self.r * scalar, self.g * scalar, self.b * scalar)
 
-    def get_red(self):
-        return self.r
-
-    def get_green(self):
-        return self.g
-
-    def get_blue(self):
-        # return 255 * self.b
-        return self.b
-
-    def gray_scale(self):
+    def grayscale_color(self):
         outSum = self.r + self.g + self.b
         return outSum / 3

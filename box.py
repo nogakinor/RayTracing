@@ -8,21 +8,21 @@ import intersection
 
 # boxes class
 
-class Cube:
+class Box:
 
-    def __init__(self, center: np.ndarray, half_scale: np.ndarray, material: material.Material):
+    def __init__(self, center: np.ndarray, half_scale: np.ndarray, input_material: material.Material):
         # Normalize Vectors from input.
         self.center = center
         self.half_scale = vector.multiply(half_scale, 0.5)
-        self.material = material
+        self.material = input_material
 
     def intersect(self, inputRay: ray.Ray, shadow: bool):
         t_near = -float("inf")
         t_far = float("inf")
-        co = vector.minus(self.center, inputRay.start_point)
+        offset_center = vector.minus(self.center, inputRay.start_point)
         axis = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         for i in range(3):
-            r = co.item(i)
+            r = offset_center.item(i)
             s = inputRay.direction.item(i)
             if abs(s) < sys.float_info.epsilon:
                 t0 = r + self.half_scale.item(i)

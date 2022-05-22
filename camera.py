@@ -2,9 +2,9 @@ import numpy as np
 import vector
 
 
+# camera class
 class Camera:
-
-    x = np.zeros(10, dtype=int)
+    camera_vars = np.zeros(10, dtype=int)
 
     # position, look_at,up,right are 3D vectors.
     # screen_d, screen_w are numbers.
@@ -14,7 +14,6 @@ class Camera:
         self.position = position
         self.look_at = vector.normalized(vector.minus(look_at, position))
         self.up = vector.normalized(vector.projected_left(up, self.look_at))
-        self.screen_d = screen_d
-        self.screen_w = screen_w
+        self.screen_height = screen_d
+        self.screen_width = screen_w
         self.right = vector.normalized(vector.cross_product(up, self.look_at))
-

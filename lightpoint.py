@@ -10,9 +10,9 @@ class LightPoint:
     # shadow = 0.0
     # radius = 0.0
 
-    def __init__(self, position: np.ndarray, inputColor: color.Color, specular: float, shadow: float, radius: float):
+    def __init__(self, position: np.ndarray, inputColor: color.Color, specularity: float, shadow: float, radius: float):
         self.position = position
         self.color = inputColor
-        self.specular = specular
+        self.specularity = specularity
         self.shadow = shadow
         self.radius = radius

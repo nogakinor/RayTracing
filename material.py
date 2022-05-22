@@ -1,16 +1,14 @@
 import color
 
 
-class Material:
-    # diffuse = Color()
-    # specular = Color()
-    # reflection = Color()
-    # phong = 0.0
-    # trans = 0.0
+# material class
 
-    def __init__(self, diffuse: color.Color, specular: color.Color, reflection: color.Color, phong: float, trans: float):
-        self.diffuse = diffuse
-        self.specular = specular
+class Material:
+
+    def __init__(self, diffusion: color.Color, specularity: color.Color, reflection: color.Color, phong: float,
+                 transparency: float):
+        self.diffusion = diffusion
+        self.specularity = specularity
         self.reflection = reflection
         self.phong = phong
-        self.trans = trans
+        self.transparency = transparency
